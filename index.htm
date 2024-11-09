@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Picker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .color-button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+        #resetButton {
+            display: none; /* Hide reset button by default */
+        }
+        .chosen-name {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Color Picker</h1>
+    <input type="text" id="nameInput" placeholder="Please Type in Your Group Number">
+    <div>
+        <button class="color-button" style="background-color: red;" onclick="chooseColor('Red')">Red</button>
+        <button class="color-button" style="background-color: green;" onclick="chooseColor('Green')">Green</button>
+        <button class="color-button" style="background-color: blue;" onclick="chooseColor('Blue')">Blue</button>
+        <button class="color-button" style="background-color: yellow;" onclick="chooseColor('Yellow')">Yellow</button>
+    </div>
+    <div id="chosenColors" class="chosen-name"></div>
+    <button id="resetButton" onclick="resetColors()">Reset Colors</button>
+
+    <script>
+        const chosenColors = {};
+        const adminPassword = "admin_alohamora";
+
+        function chooseColor(color) {
+            const nameInput = document.getElementById('nameInput');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                alert("Please enter your name.");
+                return;
+            }
+
+            if (chosenColors[color]) {
+                alert(`The color ${color} has already been chosen.`);
+                return;
+            }
+
+            chosenColors[color] = name;
+            displayChosenColors();
+            nameInput.value = ''; // Clear the input
+
+            // Show reset button if admin is logged in
+            if (confirm("Are you the admin? Enter the admin password to access the reset button.")) {
+                const passwordInput = prompt("Enter admin password:");
+                if (passwordInput === adminPassword) {
+                    document.getElementById('resetButton').style.display = 'block';
+                }
+            }
+        }
+
+        function displayChosenColors() {
+            const chosenColorsDiv = document.getElementById('chosenColors');
+            chosenColorsDiv.innerHTML = '';
+
+            for (const [color, name] of Object.entries(chosenColors)) {
+                const nameElement = document.createElement('div');
+                nameElement.textContent = `${name} chose ${color}`;
+                nameElement.style.color = color.toLowerCase();
+                chosenColorsDiv.appendChild(nameElement);
+            }
+        }
+
+        function resetColors() {
+            if (confirm("Are you sure you want to reset all colors?")) {
+                for (const color in chosenColors) {
+                    delete chosenColors[color];
+                }
+                displayChosenColors();
+                document.getElementById('resetButton').style.display = 'none'; // Hide reset button
+            }
+        }
+    </script>
+
+</body>
+</html>
